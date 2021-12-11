@@ -1,0 +1,40 @@
+{
+  "name": "imageapi",
+  "version": "1.0.0",
+  "description": "an api for resizing image",
+  "main": "index.js",
+  "scripts": {
+    "prettier": "prettier --config .prettierrc *.js --write",
+    "lint": "eslint ./build/index.js",
+    "lint-init": "eslint --init",
+    "tsc-init": "npx tsc --init",
+    "build":"npx tsc",
+    "jasmine":"jasmine",
+    "unit-test":"npm run build && npm run jasmine"
+  },
+  "author": "Rabie Mohamed",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jasmine": "^3.10.2",
+    "@types/node": "^16.11.12",
+    "@typescript-eslint/eslint-plugin": "^5.6.0",
+    "@typescript-eslint/parser": "^5.6.0",
+    "eslint": "^8.4.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-promise": "^5.2.0",
+    "jasmine": "^3.10.0",
+    "jasmine-spec-reporter": "^7.0.0",
+    "prettier": "^1.19.1",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "@types/lodash": "^4.14.178",
+    "loadash": "^1.0.0"
+  }
+}

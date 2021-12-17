@@ -1,12 +1,13 @@
-import * as fs from 'fs';
-import * as canvas from 'canvas';
-import * as path from 'path';
+import * as fs from "fs";
+import * as canvas from "canvas";
+import * as path from "path";
 
-const environment = process.env.NODE_ENV || 'production';
+const environment = process.env.NODE_ENV || "production";
 
 export default class imageProcess {
-    static createImage(width:number, height:number) :Buffer|boolean {
-        const dirName = environment === 'production' ? './thumb' : './dist/thumb';
+    static createImage(width: number, height: number): Buffer | boolean {
+        const dirName =
+            environment === "production" ? "./thumb" : "./dist/thumb";
 
         const imageCanvas = canvas.createCanvas(width, height);
         const context = imageCanvas.getContext("2d");
@@ -17,7 +18,7 @@ export default class imageProcess {
         if (width < 200 || height < 200) {
             context.font = "10px Arial";
         }
-        context.textAlign = 'center';
+        context.textAlign = "center";
         context.fillStyle = "#000000";
         context.fillText(`${width} X ${height}`, width / 2, height / 2);
         const buffer = imageCanvas.toBuffer("image/png");
@@ -33,8 +34,9 @@ export default class imageProcess {
         }
     }
 
-    static readImageFromDisk(width:number, height:number) :Buffer|boolean {
-        const dirName = environment === 'production' ? './thumb' : './dist/thumb';
+    static readImageFromDisk(width: number, height: number): Buffer | boolean {
+        const dirName =
+            environment === "production" ? "./thumb" : "./dist/thumb";
         try {
             return fs.readFileSync(`${dirName}/${width}x${height}.png`);
         } catch (err) {
@@ -43,8 +45,9 @@ export default class imageProcess {
         }
     }
 
-    static readFullImageFromDisk(filename:string) :Buffer|boolean {
+    static readFullImageFromDisk(filename: string): Buffer | boolean {
         try {
+            console.log(fs.readFileSync(filename));
             return fs.readFileSync(filename);
         } catch (err) {
             console.log(err);
@@ -52,17 +55,21 @@ export default class imageProcess {
         }
     }
 
-    // static resizeImage(width:number, height:number, filename:string) :Buffer|boolean {
-    //     const imageCanvas2 = canvas.createCanvas(width, height);
-    //     const context = imageCanvas2.getContext("2d");
+    static resizeImage(
+        width: number,
+        height: number,
+        filename: string
+    ): Buffer | boolean {
+        const dirName = environment === "production" ? "./full" : "./dist/full";
+        const imageCanvas2 = canvas.createCanvas(width, height);
+        const context = imageCanvas2.getContext("2d");
 
-    //     const image = new Image();
-    //     image.onload = () => {
-    //         context.drawImage(image, 0, 0);
-    //     };
-    //     image.src = imageProcess.readFullImageFromDisk(filename).toString('base64');
+        context.drawImage(
+            imageProcess.readFullImageFromDisk(`${dirName}/${filename}`),
+            0,
+            0
+        );
 
-    //     const ouputBuffer = imageCanvas2.toBuffer("image/png");
-    //     return ouputBuffer;
-    // }
+        return imageCanvas2.toBuffer("image/png");
+    }
 }

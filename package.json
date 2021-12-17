@@ -10,9 +10,9 @@
     "lint-config-init": "eslint --init",
     "typerscript-config-init": "npx tsc --init",
     "jasmine": "jasmine",
-    "serve": "nodemon src/index.ts",
+    "serve": "npm run prettier && nodemon src/index.ts",
     "unit-test": "npm run build && npm run jasmine",
-    "build": "npx tsc",
+    "build": "npm run prettier && npx tsc",
     "build:prod": "npx tsc && SET NODE_ENV=production",
     "start": "npm run build && SET NODE_ENV=development && node dist/."
   },

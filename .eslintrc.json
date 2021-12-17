@@ -15,7 +15,8 @@
     },
     "plugins": [
         "@typescript-eslint",
-        "eslint-plugin-jasmine"
+        "eslint-plugin-jasmine",
+        "prettier"
     ],
     "ignorePatterns": ["src/tests/helpers/*.ts","dist/**/*.js"],
     "rules": {
@@ -23,7 +24,10 @@
         "import/extensions": [0, "never", {"ignorePackages": true}],
         "indent": ["error", 4],
         "quotes":"off",
-        "no-trailing-spaces":"off"
+        "no-trailing-spaces":"off",
+        "operator-linebreak":"off",
+        "comma-dangle":"off",
+        "arrow-parens": ["error", "as-needed"]
     },
     "settings": {
         "import/resolver": {

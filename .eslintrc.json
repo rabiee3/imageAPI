@@ -17,11 +17,13 @@
         "@typescript-eslint",
         "eslint-plugin-jasmine"
     ],
-    "ignorePatterns": ["src/tests/helpers/*.ts","dist/tests/**/*.js"],
+    "ignorePatterns": ["src/tests/helpers/*.ts","dist/**/*.js"],
     "rules": {
         "linebreak-style": ["error", "windows"],
         "import/extensions": [0, "never", {"ignorePackages": true}],
-        "indent": ["error", 4]
+        "indent": ["error", 4],
+        "quotes":"off",
+        "no-trailing-spaces":"off"
     },
     "settings": {
         "import/resolver": {

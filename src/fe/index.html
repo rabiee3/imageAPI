@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <h3>Placeholder API usage example</h3>
+        <img src="http://localhost:3000/api/placeholder/200/400" />
+
+        <hr/>
+        <h3>Resize API usage example</h3>
+        <input id="width" />
+        <input id="height" />
+
+        <input id="imageInput" type="file" />
+
+        <img id="img" />
+
+        <script>
+            var oReq = new XMLHttpRequest();
+
+
+            function readFile() {
+                if (this.files && this.files[0]) {
+                    var filereader = new FileReader();
+                    var resizedbuffer;
+                    filereader.addEventListener("load", function(e) {
+                        e.target.result;
+
+                        oReq.open("GET", `http://localhost:3000/api/resize/300/300/${e.target.result}`);
+                        oReq.onload = function(res) {
+                            resizedbuffer = oReq.response;
+                            console.log(oReq.response);
+                        }
+
+                        oReq.send();
+
+                        //after resize
+                        document.getElementById("img").src = resizedbuffer;
+                    });
+
+                    filereader.readAsDataURL(this.files[0]);
+                }
+            }
+
+            document.getElementById("imageInput").addEventListener("change", readFile);
+        </script>
+    </body>
+</html>

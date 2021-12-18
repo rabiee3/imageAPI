@@ -1,13 +1,16 @@
 import * as fs from "fs";
 import * as canvas from "canvas";
-import * as path from "path";
+import * as sharp from "sharp";
+import { Sharp } from "sharp";
 
 const environment = process.env.NODE_ENV || "production";
 
 export default class imageProcess {
     static createImage(width: number, height: number): Buffer | boolean {
         const dirName =
-            environment === "production" ? "./thumb" : "./dist/thumb";
+            environment === "production"
+                ? "./placeholderThumbs"
+                : "./dist/placeholderThumbs";
 
         const imageCanvas = canvas.createCanvas(width, height);
         const context = imageCanvas.getContext("2d");
@@ -29,28 +32,18 @@ export default class imageProcess {
             fs.writeFileSync(`${dirName}/${width}x${height}.png`, buffer);
             return buffer;
         } catch (err) {
-            console.log(err);
             return false;
         }
     }
 
     static readImageFromDisk(width: number, height: number): Buffer | boolean {
         const dirName =
-            environment === "production" ? "./thumb" : "./dist/thumb";
+            environment === "production"
+                ? "./placeholderThumbs"
+                : "./dist/placeholderThumbs";
         try {
             return fs.readFileSync(`${dirName}/${width}x${height}.png`);
         } catch (err) {
-            console.log(err);
-            return false;
-        }
-    }
-
-    static readFullImageFromDisk(filename: string): Buffer | boolean {
-        try {
-            console.log(fs.readFileSync(filename));
-            return fs.readFileSync(filename);
-        } catch (err) {
-            console.log(err);
             return false;
         }
     }
@@ -58,18 +51,16 @@ export default class imageProcess {
     static resizeImage(
         width: number,
         height: number,
-        filename: string
-    ): Buffer | boolean {
+        path: string
+    ): Sharp | boolean {
         const dirName = environment === "production" ? "./full" : "./dist/full";
-        const imageCanvas2 = canvas.createCanvas(width, height);
-        const context = imageCanvas2.getContext("2d");
-
-        context.drawImage(
-            imageProcess.readFullImageFromDisk(`${dirName}/${filename}`),
-            0,
-            0
-        );
-
-        return imageCanvas2.toBuffer("image/png");
+        try {
+            const readStream = fs.createReadStream(`${dirName}/${path}`);
+            let transform = sharp();
+            transform = transform.resize(width, height);
+            return readStream.pipe(transform);
+        } catch (error) {
+            return false;
+        }
     }
 }

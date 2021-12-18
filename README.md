@@ -26,7 +26,7 @@
 - /api
 
 ### Image placeholder
-- /api/placeholder/:width/:height
+- /api/placeholder/200/400
 
 ### Image resize from 'full' folder
-- /api/image?width=200&height=200
+- /api/image?name=nature&width=200&height=400

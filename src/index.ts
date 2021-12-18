@@ -9,8 +9,11 @@ interface ICachedImage {
     height: number;
 }
 const alreadySavedPlacehoders: ICachedImage[] = [];
+const alreadySavedImageThumbs: ICachedImage[] = [];
 const environment = process.env.NODE_ENV || "production";
-const srcImageDir = environment === "production" ? "./full" : "./dist/full";
+const srcDirName = environment === "production" ? "./full" : "./dist/full";
+const thumbsDirName =
+    environment === "production" ? "./imageThumbs" : "./dist/imageThumbs";
 const placeholderDirName =
     environment === "production"
         ? "./placeholderThumbs"
@@ -67,18 +70,69 @@ app.get("/api/placeholder/:width/:height", (req, res) => {
 });
 
 // image resize from 'full' folder
-app.get("/api/image", (req, res) => {
+app.get("/api/image", async (req, res) => {
     const width: number = parseInt(req.query.width as string, 10);
     const height: number = parseInt(req.query.height as string, 10);
     const name: string = req.query.name as string;
+
     res.set({ "Content-Type": "image/png" });
-    const processedImage = imageProcess.resizeImage(
-        width,
-        height,
-        srcImageDir,
-        name
-    ) as Sharp;
-    processedImage.toBuffer().then((result: Buffer) => res.send(result));
+
+    let processedImage;
+
+    let alreadySavedThumb = false;
+    alreadySavedImageThumbs.forEach(item => {
+        if (item.width === width && item.height === height) {
+            alreadySavedThumb = true;
+        }
+    });
+    res.set({ "Content-Type": "image/png" });
+    if (alreadySavedThumb) {
+        if (
+            typeof imageProcess.readImageFromDisk(
+                width,
+                height,
+                thumbsDirName,
+                name
+            ) !== "string"
+        ) {
+            res.send(
+                imageProcess.readImageFromDisk(
+                    width,
+                    height,
+                    thumbsDirName,
+                    name
+                )
+            );
+            console.log("already saved scenario");
+        } else {
+            res.status(404);
+            res.send("Cached File Not Found");
+        }
+    } else {
+        if (
+            typeof imageProcess.resizeImage(
+                width,
+                height,
+                srcDirName,
+                thumbsDirName,
+                name
+            ) !== "string"
+        ) {
+            processedImage = await imageProcess.resizeImage(
+                width,
+                height,
+                srcDirName,
+                thumbsDirName,
+                name
+            );
+            res.send(processedImage);
+        } else {
+            res.status(500);
+            res.send("Something wrong happened, please try again");
+        }
+        alreadySavedImageThumbs.push({ width, height });
+        console.log("new image scenario");
+    }
 });
 
 export default app;

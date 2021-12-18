@@ -12,7 +12,7 @@
     "jasmine": "jasmine",
     "serve": "npm run prettier && nodemon src/index.ts",
     "unit-test": "npm run build && npm run jasmine",
-    "copy-full-image": "copyfiles -u 2 src/full/*.png full",
+    "copy-full-image": "copyfiles -u 2 src/full/*.png dist/full",
     "build": "npm run prettier && npx tsc && npm run copy-full-image",
     "build:prod": "npx tsc && SET NODE_ENV=production",
     "start": "npm run build && SET NODE_ENV=development && node dist/."

@@ -36,9 +36,15 @@ export default class imageProcess {
     static readImageFromDisk(
         width: number,
         height: number,
-        dirName: string
+        dirName: string,
+        fileName?: string
     ): Buffer | string {
         try {
+            if (fileName) {
+                return fs.readFileSync(
+                    `${dirName}/${fileName}-${width}x${height}.png`
+                );
+            }
             return fs.readFileSync(`${dirName}/${width}x${height}.png`);
         } catch (err) {
             return `image read error : ${err}`;
@@ -48,31 +54,32 @@ export default class imageProcess {
     static resizeImage(
         width: number,
         height: number,
+        srcDirName: string,
         dirName: string,
         name: string
-    ): Sharp | string {
-        try {
-            const readStream = fs.createReadStream(`${dirName}/${name}.png`);
-            let transform = sharp();
-            transform = transform.resize(width, height);
-            return readStream.pipe(transform);
-        } catch (error) {
-            return `resize image error : ${error}`;
-        }
-    }
+    ): Promise<Buffer | unknown> {
+        const readStream = fs.createReadStream(`${srcDirName}/${name}.png`);
+        let transform = sharp() as Sharp;
 
-    static readThumbImageFromDisk(
-        width: number,
-        height: number,
-        dirName: string,
-        filename: string
-    ): Buffer | string {
-        try {
-            return fs.readFileSync(
-                `${dirName}/${filename}-${width}x${height}.png`
-            );
-        } catch (err) {
-            return `image read error : ${err}`;
-        }
+        transform = transform.resize(width, height);
+        return new Promise(res => {
+            readStream
+                .pipe(transform)
+                .toBuffer()
+                .then(data => {
+                    if (!fs.existsSync(dirName)) {
+                        fs.mkdirSync(dirName);
+                    }
+                    try {
+                        fs.writeFileSync(
+                            `${dirName}/${name}-${width}x${height}.png`,
+                            data
+                        );
+                        res(data);
+                    } catch (err) {
+                        res(err);
+                    }
+                });
+        });
     }
 }

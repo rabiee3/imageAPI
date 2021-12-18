@@ -3,7 +3,9 @@ import imageProcessing from "../imageProcessing";
 const width = 100;
 const height = 100;
 const environment = process.env.NODE_ENV || "production";
-const srcImageDir = environment === "production" ? "./full" : "./dist/full";
+const srcDirName = environment === "production" ? "./full" : "./dist/full";
+const thumbsDirName =
+    environment === "production" ? "./imageThumbs" : "./dist/imageThumbs";
 const placeholderDirName =
     environment === "production"
         ? "./placeholderThumbs"
@@ -24,7 +26,13 @@ describe("***Image processing functions***", () => {
 
     it("expects 'resizeImage' function to return a Sharp object", () => {
         expect(
-            imageProcessing.resizeImage(width, height, srcImageDir, "nature")
+            imageProcessing.resizeImage(
+                width,
+                height,
+                srcDirName,
+                thumbsDirName,
+                "nature"
+            )
         ).toBeTruthy();
     });
 });

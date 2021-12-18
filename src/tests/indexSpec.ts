@@ -4,6 +4,7 @@ import app from "../index";
 const request = supertest(app);
 const width = 100;
 const height = 100;
+const name = "nature";
 
 describe("***API routes***", () => {
     it("expects 'home' route to respond with status 200 success", async done => {
@@ -30,7 +31,7 @@ describe("***API routes***", () => {
 
     it("expect 'image' resize route to respond with status 200", async done => {
         const response = await request.get(
-            `/api/image?width=${width}&height=${height}`
+            `/api/image?name=${name}&width=${width}&height=${height}`
         );
         expect(response.status).toBe(200);
         done();
@@ -38,7 +39,7 @@ describe("***API routes***", () => {
 
     it("expect 'image' resize route to respond with image buffer", async done => {
         const response = await request.get(
-            `/api/image?width=${width}&height=${height}`
+            `/api/image?name=${name}&width=${width}&height=${height}`
         );
         expect(typeof response.body === "object").toBeTruthy();
         done();

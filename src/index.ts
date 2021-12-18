@@ -9,6 +9,12 @@ interface ICachedImage {
     height: number;
 }
 const alreadySavedPlacehoders: ICachedImage[] = [];
+const environment = process.env.NODE_ENV || "production";
+const srcImageDir = environment === "production" ? "./full" : "./dist/full";
+const placeholderDirName =
+    environment === "production"
+        ? "./placeholderThumbs"
+        : "./dist/placeholderThumbs";
 
 app.listen(port, () => {
     // console.log(`API Listening on http://localhost:${port}`);
@@ -35,15 +41,23 @@ app.get("/api/placeholder/:width/:height", (req, res) => {
     });
     res.set({ "Content-Type": "image/png" });
     if (alreadySaved) {
-        if (imageProcess.readImageFromDisk(width, height)) {
-            res.send(imageProcess.readImageFromDisk(width, height));
+        if (imageProcess.readImageFromDisk(width, height, placeholderDirName)) {
+            res.send(
+                imageProcess.readImageFromDisk(
+                    width,
+                    height,
+                    placeholderDirName
+                )
+            );
         } else {
             res.status(404);
             res.send("Cached File Not Found");
         }
     } else {
-        if (imageProcess.createImage(width, height)) {
-            res.send(imageProcess.createImage(width, height));
+        if (imageProcess.createImage(width, height, placeholderDirName)) {
+            res.send(
+                imageProcess.createImage(width, height, placeholderDirName)
+            );
         } else {
             res.status(500);
             res.send("Something wrong happened, please try again");
@@ -56,11 +70,13 @@ app.get("/api/placeholder/:width/:height", (req, res) => {
 app.get("/api/image", (req, res) => {
     const width: number = parseInt(req.query.width as string, 10);
     const height: number = parseInt(req.query.height as string, 10);
+    const name: string = req.query.name as string;
     res.set({ "Content-Type": "image/png" });
     const processedImage = imageProcess.resizeImage(
         width,
         height,
-        "nature.png"
+        srcImageDir,
+        name
     ) as Sharp;
     processedImage.toBuffer().then((result: Buffer) => res.send(result));
 });

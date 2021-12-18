@@ -3,15 +3,12 @@ import * as canvas from "canvas";
 import * as sharp from "sharp";
 import { Sharp } from "sharp";
 
-const environment = process.env.NODE_ENV || "production";
-
 export default class imageProcess {
-    static createImage(width: number, height: number): Buffer | boolean {
-        const dirName =
-            environment === "production"
-                ? "./placeholderThumbs"
-                : "./dist/placeholderThumbs";
-
+    static createImage(
+        width: number,
+        height: number,
+        dirName: string
+    ): Buffer | string {
         const imageCanvas = canvas.createCanvas(width, height);
         const context = imageCanvas.getContext("2d");
 
@@ -32,35 +29,50 @@ export default class imageProcess {
             fs.writeFileSync(`${dirName}/${width}x${height}.png`, buffer);
             return buffer;
         } catch (err) {
-            return false;
+            return `file write error : ${err}`;
         }
     }
 
-    static readImageFromDisk(width: number, height: number): Buffer | boolean {
-        const dirName =
-            environment === "production"
-                ? "./placeholderThumbs"
-                : "./dist/placeholderThumbs";
+    static readImageFromDisk(
+        width: number,
+        height: number,
+        dirName: string
+    ): Buffer | string {
         try {
             return fs.readFileSync(`${dirName}/${width}x${height}.png`);
         } catch (err) {
-            return false;
+            return `image read error : ${err}`;
         }
     }
 
     static resizeImage(
         width: number,
         height: number,
-        path: string
-    ): Sharp | boolean {
-        const dirName = environment === "production" ? "./full" : "./dist/full";
+        dirName: string,
+        name: string
+    ): Sharp | string {
         try {
-            const readStream = fs.createReadStream(`${dirName}/${path}`);
+            const readStream = fs.createReadStream(`${dirName}/${name}.png`);
             let transform = sharp();
             transform = transform.resize(width, height);
             return readStream.pipe(transform);
         } catch (error) {
-            return false;
+            return `resize image error : ${error}`;
+        }
+    }
+
+    static readThumbImageFromDisk(
+        width: number,
+        height: number,
+        dirName: string,
+        filename: string
+    ): Buffer | string {
+        try {
+            return fs.readFileSync(
+                `${dirName}/${filename}-${width}x${height}.png`
+            );
+        } catch (err) {
+            return `image read error : ${err}`;
         }
     }
 }

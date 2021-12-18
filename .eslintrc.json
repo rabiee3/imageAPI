@@ -18,7 +18,7 @@
         "eslint-plugin-jasmine",
         "prettier"
     ],
-    "ignorePatterns": ["src/tests/helpers/*.ts","dist/**/*.js"],
+    "ignorePatterns": ["dist/**/*.js"],
     "rules": {
         "linebreak-style": ["error", "windows"],
         "import/extensions": [0, "never", {"ignorePackages": true}],

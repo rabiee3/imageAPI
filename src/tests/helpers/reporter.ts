@@ -1,4 +1,4 @@
-//from spec-reporte documentation
+// from spec-reporter documentation
 import {
     DisplayProcessor,
     SpecReporter,
@@ -7,7 +7,7 @@ import {
 import SuiteInfo = jasmine.SuiteInfo;
 
 class CustomProcessor extends DisplayProcessor {
-    public displayJasmineStarted(info: SuiteInfo, log: string): string {
+    public static displayJasmineStarted(info: SuiteInfo, log: string): string {
         return `${log}`;
     }
 }

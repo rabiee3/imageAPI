@@ -27,7 +27,8 @@
         "no-trailing-spaces":"off",
         "operator-linebreak":"off",
         "comma-dangle":"off",
-        "arrow-parens": ["error", "as-needed"]
+        "arrow-parens": ["error", "as-needed"],
+        "import/no-extraneous-dependencies":"off"
     },
     "settings": {
         "import/resolver": {

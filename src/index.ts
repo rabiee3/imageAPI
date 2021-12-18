@@ -36,6 +36,16 @@ app.get("/api/placeholder/:width/:height", (req, res) => {
     const width: number = parseInt(req.params.width, 10);
     const height: number = parseInt(req.params.height, 10);
 
+    if (Number.isNaN(width)) {
+        res.status(500);
+        res.send("Please enter correct width value");
+    }
+
+    if (Number.isNaN(height)) {
+        res.status(500);
+        res.send("Please enter correct height value");
+    }
+
     let alreadySaved = false;
     alreadySavedPlacehoders.forEach(item => {
         if (item.width === width && item.height === height) {
@@ -75,6 +85,21 @@ app.get("/api/image", async (req, res) => {
     const height: number = parseInt(req.query.height as string, 10);
     const name: string = req.query.name as string;
 
+    if (Number.isNaN(width)) {
+        res.status(500);
+        res.send("Please enter correct width value");
+    }
+
+    if (Number.isNaN(height)) {
+        res.status(500);
+        res.send("Please enter correct height value");
+    }
+
+    if (!name) {
+        res.status(500);
+        res.send("Please enter correct name value");
+    }
+
     res.set({ "Content-Type": "image/png" });
 
     let processedImage;
@@ -103,7 +128,6 @@ app.get("/api/image", async (req, res) => {
                     name
                 )
             );
-            console.log("already saved scenario");
         } else {
             res.status(404);
             res.send("Cached File Not Found");
@@ -131,7 +155,6 @@ app.get("/api/image", async (req, res) => {
             res.send("Something wrong happened, please try again");
         }
         alreadySavedImageThumbs.push({ width, height });
-        console.log("new image scenario");
     }
 });
 

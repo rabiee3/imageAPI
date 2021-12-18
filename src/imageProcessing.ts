@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as canvas from "canvas";
 import * as sharp from "sharp";
 import { Sharp } from "sharp";
+import { ReadStream } from "fs";
 
 export default class imageProcess {
     static createImage(
@@ -58,28 +59,33 @@ export default class imageProcess {
         dirName: string,
         name: string
     ): Promise<Buffer | unknown> {
-        const readStream = fs.createReadStream(`${srcDirName}/${name}.png`);
-        let transform = sharp() as Sharp;
-
-        transform = transform.resize(width, height);
         return new Promise(res => {
-            readStream
-                .pipe(transform)
-                .toBuffer()
-                .then(data => {
-                    if (!fs.existsSync(dirName)) {
-                        fs.mkdirSync(dirName);
-                    }
-                    try {
-                        fs.writeFileSync(
-                            `${dirName}/${name}-${width}x${height}.png`,
-                            data
-                        );
-                        res(data);
-                    } catch (err) {
-                        res(err);
-                    }
-                });
+            let readStream: ReadStream;
+            try {
+                readStream = fs.createReadStream(`${srcDirName}/${name}.png`);
+                let transform = sharp() as Sharp;
+                transform = transform.resize(width, height);
+
+                readStream
+                    .pipe(transform)
+                    .toBuffer()
+                    .then(data => {
+                        if (!fs.existsSync(dirName)) {
+                            fs.mkdirSync(dirName);
+                        }
+                        try {
+                            fs.writeFileSync(
+                                `${dirName}/${name}-${width}x${height}.png`,
+                                data
+                            );
+                            res(data);
+                        } catch (err) {
+                            res(err);
+                        }
+                    });
+            } catch (err) {
+                res(err);
+            }
         });
     }
 }

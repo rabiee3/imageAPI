@@ -2,7 +2,6 @@ import * as fs from "fs";
 import * as canvas from "canvas";
 import * as sharp from "sharp";
 import { Sharp } from "sharp";
-import { ReadStream } from "fs";
 
 export default class imageProcess {
     static createImage(
@@ -58,34 +57,34 @@ export default class imageProcess {
         srcDirName: string,
         dirName: string,
         name: string
-    ): Promise<Buffer | unknown> {
+    ): Promise<Buffer | string> {
         return new Promise(res => {
-            let readStream: ReadStream;
-            try {
-                readStream = fs.createReadStream(`${srcDirName}/${name}.png`);
-                let transform = sharp() as Sharp;
-                transform = transform.resize(width, height);
-
-                readStream
-                    .pipe(transform)
-                    .toBuffer()
-                    .then(data => {
-                        if (!fs.existsSync(dirName)) {
-                            fs.mkdirSync(dirName);
-                        }
-                        try {
-                            fs.writeFileSync(
-                                `${dirName}/${name}-${width}x${height}.png`,
-                                data
-                            );
-                            res(data);
-                        } catch (err) {
-                            res(err);
-                        }
-                    });
-            } catch (err) {
-                res(err);
-            }
+            const readStream = fs
+                .createReadStream(`${srcDirName}/${name}.png`)
+                .on("error", err => {
+                    res(
+                        `<h3>Error: Source file not found</h3><br/>${err.message.toString()}`
+                    );
+                });
+            let transform = sharp() as Sharp;
+            transform = transform.resize(width, height);
+            readStream
+                .pipe(transform)
+                .toBuffer()
+                .then(data => {
+                    if (!fs.existsSync(dirName)) {
+                        fs.mkdirSync(dirName);
+                    }
+                    try {
+                        fs.writeFileSync(
+                            `${dirName}/${name}-${width}x${height}.png`,
+                            data
+                        );
+                        res(data);
+                    } catch (err) {
+                        res(`error creating file: ${err}`);
+                    }
+                });
         });
     }
 }

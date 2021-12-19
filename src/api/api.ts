@@ -99,8 +99,6 @@ apiRouter.get("/api/image", async (req, res) => {
 
     res.set({ "Content-Type": "image/png" });
 
-    let processedImage;
-
     let alreadySavedThumb = false;
     alreadySavedImageThumbs.forEach(item => {
         if (
@@ -134,27 +132,20 @@ apiRouter.get("/api/image", async (req, res) => {
             res.send("Cached File Not Found");
         }
     } else {
-        if (
-            typeof imageProcess.resizeImage(
+        imageProcess
+            .resizeImage(
                 width,
                 height,
                 config.srcDirName,
                 config.thumbsDirName,
                 name
-            ) !== "string"
-        ) {
-            processedImage = await imageProcess.resizeImage(
-                width,
-                height,
-                config.srcDirName,
-                config.thumbsDirName,
-                name
-            );
-            res.send(processedImage);
-        } else {
-            res.status(500);
-            res.send("Something wrong happened, please try again");
-        }
+            )
+            .then(data => {
+                if (typeof data === "string") {
+                    res.set({ "Content-Type": "text/html; charset=utf-8" });
+                }
+                res.send(data);
+            });
         alreadySavedImageThumbs.push({ width, height, name });
     }
 });

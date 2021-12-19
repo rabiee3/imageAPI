@@ -97,8 +97,6 @@ apiRouter.get("/api/image", async (req, res) => {
         res.send("Please enter correct name value");
     }
 
-    res.set({ "Content-Type": "image/png" });
-
     let alreadySavedThumb = false;
     alreadySavedImageThumbs.forEach(item => {
         if (
@@ -109,7 +107,7 @@ apiRouter.get("/api/image", async (req, res) => {
             alreadySavedThumb = true;
         }
     });
-    res.set({ "Content-Type": "image/png" });
+
     if (alreadySavedThumb) {
         if (
             typeof imageProcess.readImageFromDisk(
@@ -119,6 +117,7 @@ apiRouter.get("/api/image", async (req, res) => {
                 name
             ) !== "string"
         ) {
+            res.set({ "Content-Type": "image/png" });
             res.send(
                 imageProcess.readImageFromDisk(
                     width,
@@ -129,6 +128,7 @@ apiRouter.get("/api/image", async (req, res) => {
             );
         } else {
             res.status(404);
+            res.set({ "Content-Type": "text/html; charset=utf-8" });
             res.send("Cached File Not Found");
         }
     } else {
@@ -143,8 +143,15 @@ apiRouter.get("/api/image", async (req, res) => {
             .then(data => {
                 if (typeof data === "string") {
                     res.set({ "Content-Type": "text/html; charset=utf-8" });
+                    res.send(data);
+                } else {
+                    res.set({ "Content-Type": "image/png" });
+                    res.send(data);
                 }
-                res.send(data);
+            })
+            .catch(err => {
+                res.set({ "Content-Type": "text/html; charset=utf-8" });
+                res.send(err);
             });
         alreadySavedImageThumbs.push({ width, height, name });
     }

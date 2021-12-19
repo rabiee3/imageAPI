@@ -28,7 +28,8 @@
         "operator-linebreak":"off",
         "comma-dangle":"off",
         "arrow-parens": ["error", "as-needed"],
-        "import/no-extraneous-dependencies":"off"
+        "import/no-extraneous-dependencies":"off",
+        "prefer-promise-reject-errors":"off"
     },
     "settings": {
         "import/resolver": {

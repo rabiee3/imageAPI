@@ -58,7 +58,7 @@ export default class imageProcess {
         dirName: string,
         name: string
     ): Promise<Buffer | string> {
-        return new Promise(res => {
+        return new Promise((res, rej) => {
             const readStream = fs
                 .createReadStream(`${srcDirName}/${name}.png`)
                 .on("error", err => {
@@ -66,6 +66,13 @@ export default class imageProcess {
                         `<h3>Error: Source file not found</h3><br/>${err.message.toString()}`
                     );
                 });
+
+            if (width <= 0 || height <= 0) {
+                rej(
+                    "Please enter valid values for width & height (Both can't be less than or equal zero)"
+                );
+            }
+
             let transform = sharp() as Sharp;
             transform = transform.resize(width, height);
             readStream

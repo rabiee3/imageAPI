@@ -103,7 +103,11 @@ apiRouter.get("/api/image", async (req, res) => {
 
     let alreadySavedThumb = false;
     alreadySavedImageThumbs.forEach(item => {
-        if (item.width === width && item.height === height) {
+        if (
+            item.width === width &&
+            item.height === height &&
+            item.name === name
+        ) {
             alreadySavedThumb = true;
         }
     });
@@ -151,7 +155,7 @@ apiRouter.get("/api/image", async (req, res) => {
             res.status(500);
             res.send("Something wrong happened, please try again");
         }
-        alreadySavedImageThumbs.push({ width, height });
+        alreadySavedImageThumbs.push({ width, height, name });
     }
 });
 

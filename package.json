@@ -12,10 +12,9 @@
     "jasmine": "jasmine",
     "serve": "npm run prettier && nodemon src/index.ts",
     "unit-test": "npm run build && npm run jasmine",
-    "copy-full-image": "copyfiles -u 2 src/full/*.png dist/full",
-    "build": "npm run prettier && npx tsc && npm run copy-full-image",
-    "build:prod": "npx tsc && SET NODE_ENV=production",
-    "start": "npm run build && SET NODE_ENV=development && node dist/."
+    "build": "npm run prettier && npx tsc",
+    "build:prod": "npx tsc",
+    "start": "npm run build && node dist/."
   },
   "author": "Rabie Mohamed",
   "license": "ISC",
@@ -28,7 +27,6 @@
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
     "@typescript-eslint/parser": "^5.6.0",
-    "copyfiles": "^2.4.1",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.3.0",
